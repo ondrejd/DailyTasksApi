@@ -57,6 +57,7 @@ final class ChangeUserPasswordCommand extends Command
         }
 
         $user->password = Hash::make($password);
+        $user->save();
 
         info('Password was successfully changed');
 
