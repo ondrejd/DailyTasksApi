@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Console\Commands\CreateUserCommand;
 use Illuminate\Support\Str;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
