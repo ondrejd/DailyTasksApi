@@ -8,13 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 
-class RegisterController extends BaseController
+class UserController extends BaseController
 {
     /**
-     * Register api
-     *
-     * @return JsonResponse
-     *
      * @todo Just temporary will be remade when we have front-end and sent passwords will be already bcrypted
      */
     public function register(Request $request): JsonResponse
@@ -27,7 +23,7 @@ class RegisterController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors());
+            return $this->sendError('Validation Error.', $validator->errors()->toArray());
         }
 
         $input = $request->all();
@@ -40,10 +36,6 @@ class RegisterController extends BaseController
     }
 
     /**
-     * Login api
-     *
-     * @return JsonResponse
-     *
      * @todo Just temporary will be remade when we have front-end and sent password will be already bcrypted
      */
     public function login(Request $request): JsonResponse
@@ -62,5 +54,25 @@ class RegisterController extends BaseController
         } else {
             return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
+    }
+
+    public function info(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return $this->sendResponse([
+            'name' => $user->name,
+            'email' => $user->email,
+        ]);
+    }
+
+    public function delete(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $user->tokens()->delete();
+        $user->delete();
+
+        return $this->sendResponse([], 'User deleted successfully.');
     }
 }
