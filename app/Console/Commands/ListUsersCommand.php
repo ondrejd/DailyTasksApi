@@ -30,6 +30,7 @@ final class ListUsersCommand extends Command
     {
         $users = User::query()
             ->select(['name', 'email', 'created_at'])
+            ->withCount('tasks')
             ->get();
 
         table(
@@ -37,7 +38,8 @@ final class ListUsersCommand extends Command
             $users->map(fn (User $user) => [
                 $user->name,
                 $user->email,
-                $user->created_at->format('j.n.Y H:i')
+                $user->created_at->format('j.n.Y H:i'),
+                $user->tasks_count
             ])
         );
     }
