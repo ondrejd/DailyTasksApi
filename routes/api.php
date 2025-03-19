@@ -12,6 +12,6 @@ Route::controller(UserController::class)->prefix('user')->group(function() {
 Route::middleware('auth:sanctum')->group(function() {
     Route::controller(UserController::class)->prefix('user')->group(function() {
         Route::get('info', 'info')->name('user.info');
-        Route::delete('delete', 'delete')->name('user.delete');
+        Route::post('unregister', 'unregister')->name('user.unregister');
     });
 });

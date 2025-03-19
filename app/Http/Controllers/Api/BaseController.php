@@ -5,6 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller as Controller;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @OA\Info(
+ *      title="DailyTasks API",
+ *      version="1.0.0",
+ * )
+ * @OA\Server(
+ *      url="http://localhost:8000",
+ *      description="API server (development)"
+ * )
+ * @OA\SecurityScheme(
+ *      securityScheme="bearerAuth",
+ *      type="http",
+ *      name="bearerAuth",
+ *      scheme="bearer",
+ *      bearerFormat="JWT",
+ *      in="header"
+ * )
+ */
 class BaseController extends Controller
 {
     /**
