@@ -17,14 +17,37 @@
                     "Tags"
                 ],
                 "summary": "List tags",
-                "description": "Listing of all tags for current user",
+                "description": "Listing of all tags for the current user",
                 "operationId": "05429641ff2d4731ad9bc60b1c0e138c",
                 "responses": {
                     "200": {
-                        "description": "Listed tags"
+                        "description": "Listed tags",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Tag"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Unauthorised"
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
                     }
                 },
                 "security": [
@@ -38,8 +61,11 @@
                     "Tags"
                 ],
                 "summary": "Create new tag",
+                "description": "Create new tag for the current user",
                 "operationId": "d0eb902a938b5cd865c3a6efce14c0b1",
                 "requestBody": {
+                    "description": "Tag object that needs to be added to the store",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -48,29 +74,81 @@
                                 ],
                                 "properties": {
                                     "name": {
-                                        "description": "Name of the new tag",
-                                        "type": "string"
+                                        "description": "Name of the tag",
+                                        "format": "string",
+                                        "example": "Personal"
                                     },
-                                    "email": {
-                                        "description": "Color of the new tag in hex format",
-                                        "type": "string"
+                                    "color": {
+                                        "description": "Color of the tag in hex format",
+                                        "format": "string",
+                                        "example": "#0066aa"
                                     }
                                 },
-                                "type": "object",
-                                "example": {
-                                    "name": "Personal",
-                                    "color": "#333333"
-                                }
+                                "type": "object"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Tag created successfully"
+                        "description": "Tag created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Tag"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tag created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Unauthorised"
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "description": "Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name of field where the validation errors occured",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name has already been taken"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -86,6 +164,7 @@
                     "Tags"
                 ],
                 "summary": "Update selected tag",
+                "description": "Create selected tag of the current user",
                 "operationId": "136a6d25ad8f7d4e9409b189bf3056e3",
                 "parameters": [
                     {
@@ -95,15 +174,102 @@
                         "required": true,
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "example": 1
                     }
                 ],
+                "requestBody": {
+                    "description": "Tag object that needs to be updated",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the tag",
+                                        "format": "string",
+                                        "example": "Other"
+                                    },
+                                    "color": {
+                                        "description": "Color of the tag in hex format",
+                                        "format": "string",
+                                        "example": "#a66666"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Tag updated successfully"
+                        "description": "Tag updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Tag"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tag created successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Unauthorised"
+                        "description": "User is unauthorized to update this tag"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "description": "Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Name of field where the validation errors occured",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name has already been taken"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -117,6 +283,7 @@
                     "Tags"
                 ],
                 "summary": "Delete selected tag",
+                "description": "Create selected tag of the current user",
                 "operationId": "afecbd0d82f4fba14e7fb92f441e8ea6",
                 "parameters": [
                     {
@@ -126,15 +293,39 @@
                         "required": true,
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "example": 1
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Tag deleted successfully"
+                        "description": "Tag deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tag deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Unauthorised"
+                        "description": "User is unauthorized to delete this tag"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
                     }
                 },
                 "security": [
@@ -228,10 +419,40 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User successfully login"
+                        "description": "User successfully login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "4|xwf3ePQY97AJDiLLfDrwrK01hRshR12dZcBCLMms72515fcf"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Test User"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User successfully logged in"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "404": {
-                        "description": "Unauthorised"
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
                     }
                 }
             }
@@ -245,10 +466,33 @@
                 "operationId": "cdf71a463c6c18c5370d453b2fbd0437",
                 "responses": {
                     "200": {
-                        "description": "Logged user info"
+                        "description": "Logged user info",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
-                    "400": {
-                        "description": "Unauthorised"
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
                     }
                 },
                 "security": [
@@ -264,14 +508,14 @@
                     "Users"
                 ],
                 "summary": "Unregister logged user",
-                "description": "User will be unregistrated - all its data will be erased.",
+                "description": "User will be unregistred and __deleted__ thus __all its data will be erased__.",
                 "operationId": "05c829837ebc02ac491146130968e5da",
                 "responses": {
                     "200": {
                         "description": "User deleted successfully"
                     },
-                    "400": {
-                        "description": "Unauthorised"
+                    "401": {
+                        "$ref": "#/components/responses/Unauthenticated"
                     }
                 },
                 "security": [
@@ -283,6 +527,101 @@
         }
     },
     "components": {
+        "schemas": {
+            "Tag": {
+                "title": "Tag",
+                "description": "Single task's tag",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Name of the tag",
+                        "format": "string",
+                        "example": "Personal"
+                    },
+                    "color": {
+                        "description": "Color of the tag in hex format",
+                        "format": "string",
+                        "example": "#0066aa"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User",
+                "description": "User description",
+                "required": [
+                    "name",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Unique identifier",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Name of the user",
+                        "format": "string",
+                        "example": "Test User"
+                    },
+                    "email": {
+                        "description": "E-mail address of the user",
+                        "format": "string",
+                        "example": "test@example.com"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "Unauthenticated": {
+                "description": "User unauthorized",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Not authenticated"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "Target model not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
@@ -296,11 +635,11 @@
     "tags": [
         {
             "name": "Tags",
-            "description": "Tags"
+            "description": "Tasks tags API"
         },
         {
             "name": "Users",
-            "description": "Users"
+            "description": "Users API"
         }
     ]
 }

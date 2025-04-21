@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
  * )
  * @OA\Server(
  *      url="http://localhost:8000",
- *      description="API server (development)"
+ *      description="API server (development)",
  * )
  * @OA\SecurityScheme(
  *      securityScheme="bearerAuth",
@@ -20,8 +20,46 @@ use Illuminate\Http\JsonResponse;
  *      name="bearerAuth",
  *      scheme="bearer",
  *      bearerFormat="JWT",
- *      in="header"
+ *      in="header",
  * )
+ * @OA\Response(
+ *     response="Unauthenticated",
+ *     description="User unauthorized",
+ *     @OA\MediaType(
+ *         mediaType="application/json",
+ *         @OA\Schema(
+ *             @OA\Property(
+ *                 property="success",
+ *                 type="bool",
+ *                 example=false,
+ *             ),
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Not authenticated",
+ *             ),
+ *         )
+ *     )
+ * ),
+ * @OA\Response(
+ *     response="NotFound",
+ *     description="Target model not found",
+ *     @OA\MediaType(
+ *         mediaType="application/json",
+ *         @OA\Schema(
+ *             @OA\Property(
+ *                 property="success",
+ *                 type="bool",
+ *                 example=false,
+ *             ),
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Not found",
+ *             ),
+ *         )
+ *     )
+ * ),
  */
 class BaseController extends Controller
 {
@@ -30,13 +68,16 @@ class BaseController extends Controller
      *
      * @return JsonResponse
      */
-    public function sendResponse(array $result, string $message = ''): JsonResponse
+    public function sendResponse(array|null $result, string $message = ''): JsonResponse
     {
         $response = [
             'success' => true,
-            'data'    => $result,
             'message' => $message,
         ];
+
+        if ($result !== null) {
+            $response['data'] = $result;
+        }
   
         return response()->json($response, 200);
     }

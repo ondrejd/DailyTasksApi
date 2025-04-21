@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('color')->nullable();
             $table->timestamps();
+            $table->unique(['name', 'user_id'], 'unique_tag_name_per_user');
         });
     }
 

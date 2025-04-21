@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 
+/**
+ * @OA\Tag(
+ *     name="Users",
+ *     description="Users API",
+ * )
+ */
 class UserController extends BaseController
 {
     /**
@@ -42,6 +48,7 @@ class UserController extends BaseController
      *      @OA\Response(response="201", description="User registered successfully"),
      *      @OA\Response(response="422", description="Validation errors")
      * )
+     * 
      * @todo Just temporary will be remade when we have front-end and sent passwords will be already bcrypted
      */
     public function register(Request $request): JsonResponse
@@ -53,7 +60,7 @@ class UserController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return $this->sendError('Validation Error.', $validator->errors()->toArray());
+            return $this->sendError(__('Validation error'), $validator->errors()->toArray());
         }
 
         $input = $request->all();
@@ -62,7 +69,7 @@ class UserController extends BaseController
         $success['token'] =  $user->createToken('MyApp')->plainTextToken;
         $success['name'] =  $user->name;
 
-        return $this->sendResponse($success, 'User register successfully.');
+        return $this->sendResponse($success, __('User register successfully.'));
     }
 
     /**
@@ -90,11 +97,41 @@ class UserController extends BaseController
      *              )
      *          )
      *      ),
-     *      @OA\Response(response="200", description="User successfully login"),
-     *      @OA\Response(response="404", description="Unauthorised")
+     *      @OA\Response(
+     *          response="200",
+     *          description="User successfully login",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(
+     *                      property="success",
+     *                      type="bool",
+     *                      example=true,
+     *                  ),
+     *                  @OA\Property(
+     *                      property="data",
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="token",
+     *                          type="string",
+     *                          example="4|xwf3ePQY97AJDiLLfDrwrK01hRshR12dZcBCLMms72515fcf",
+     *                      ),
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string",
+     *                          example="Test User",
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                      property="message",
+     *                      type="string",
+     *                      example="User successfully logged in",
+     *                  ),
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
      * )
-     * 
-     * @todo Just temporary will be remade when we have front-end and sent password will be already bcrypted
      */
     public function login(Request $request): JsonResponse
     {
@@ -109,9 +146,9 @@ class UserController extends BaseController
             $success['token'] =  $user->createToken(env('APP_NAME'))->plainTextToken;
             $success['name'] =  $user->name;
 
-            return $this->sendResponse($success, 'User successfully login');
+            return $this->sendResponse($success, __('User successfully logged in'));
         } else {
-            return $this->sendError('Unauthorised', ['error' => 'Unauthorised']);
+            return $this->sendError(__('Not authenticated'), [], 401);
         }
     }
 
@@ -121,8 +158,31 @@ class UserController extends BaseController
      *      summary="User info",
      *      tags={"Users"},
      *      security={{"bearerAuth":{}}},
-     *      @OA\Response(response="200", description="Logged user info"),
-     *      @OA\Response(response="400", description="Unauthorised")
+     *      @OA\Response(
+     *          response="200",
+     *          description="Logged user info",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(
+     *                      property="success",
+     *                      type="bool",
+     *                      example=true,
+     *                  ),
+     *                  @OA\Property(
+     *                      property="data",
+     *                      type="array",
+     *                      @OA\Items(ref="#/components/schemas/User"),
+     *                  ),
+     *                  @OA\Property(
+     *                      property="message",
+     *                      type="string",
+     *                      example="",
+     *                  ),
+     *              ),
+     *          ),
+     *      ),
+     *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
      * )
      */
     public function info(Request $request): JsonResponse
@@ -130,8 +190,10 @@ class UserController extends BaseController
         $user = $request->user();
 
         return $this->sendResponse([
+            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            // TODO Množství úkolů a tagů
         ]);
     }
 
@@ -139,11 +201,11 @@ class UserController extends BaseController
      * @OA\Post(
      *      path="/api/user/unregister",
      *      summary="Unregister logged user",
-     *      description="User will be unregistrated - all its data will be erased.",
+     *      description="User will be unregistred and __deleted__ thus __all its data will be erased__.",
      *      tags={"Users"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(response="200", description="User deleted successfully"),
-     *      @OA\Response(response="400", description="Unauthorised")
+     *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
      * )
      */
     public function unregister(Request $request): JsonResponse
@@ -153,6 +215,6 @@ class UserController extends BaseController
         $user->tokens()->delete();
         $user->delete();
 
-        return $this->sendResponse([], 'User deleted successfully');
+        return $this->sendResponse([], __('User deleted successfully'));
     }
 }

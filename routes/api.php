@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\TagController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 
@@ -19,7 +18,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::controller(TagController::class)->prefix('tag')->group(function() {
         Route::get('', 'list')->name('tag.list');
         Route::post('', 'create')->name('tag.create');
-        Route::put('', 'update')->name('tag.update');
-        Route::delete('', 'delete')->name('tag.delete');
+        Route::put('{tag}', 'update')->where('id', '[0-9]+')->name('tag.update');
+        Route::delete('{tag}', 'delete')->where('id', '[0-9]+')->name('tag.delete');
     });
 });
