@@ -11,10 +11,143 @@
         }
     ],
     "paths": {
+        "/api/tag": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "List tags",
+                "description": "Listing of all tags for current user",
+                "operationId": "05429641ff2d4731ad9bc60b1c0e138c",
+                "responses": {
+                    "200": {
+                        "description": "Listed tags"
+                    },
+                    "400": {
+                        "description": "Unauthorised"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Create new tag",
+                "operationId": "d0eb902a938b5cd865c3a6efce14c0b1",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the new tag",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Color of the new tag in hex format",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "Personal",
+                                    "color": "#333333"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tag created successfully"
+                    },
+                    "400": {
+                        "description": "Unauthorised"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/tag/{id}": {
+            "put": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Update selected tag",
+                "operationId": "136a6d25ad8f7d4e9409b189bf3056e3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tag updated successfully"
+                    },
+                    "400": {
+                        "description": "Unauthorised"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Delete selected tag",
+                "operationId": "afecbd0d82f4fba14e7fb92f441e8ea6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tag deleted successfully"
+                    },
+                    "400": {
+                        "description": "Unauthorised"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/user/register": {
             "post": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Register new user",
                 "operationId": "df1ca50c32c4c932c79956c52c87eaab",
@@ -64,7 +197,7 @@
         "/api/user/login": {
             "post": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "User login",
                 "operationId": "e2f16b490348a902bb9994972e2d20af",
@@ -106,7 +239,7 @@
         "/api/user/info": {
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "User info",
                 "operationId": "cdf71a463c6c18c5370d453b2fbd0437",
@@ -128,7 +261,7 @@
         "/api/user/unregister": {
             "post": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Unregister logged user",
                 "description": "User will be unregistrated - all its data will be erased.",
@@ -162,8 +295,12 @@
     },
     "tags": [
         {
-            "name": "User",
-            "description": "User"
+            "name": "Tags",
+            "description": "Tags"
+        },
+        {
+            "name": "Users",
+            "description": "Users"
         }
     ]
 }

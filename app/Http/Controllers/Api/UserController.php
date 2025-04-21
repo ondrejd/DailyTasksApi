@@ -14,7 +14,7 @@ class UserController extends BaseController
      * @OA\Post(
      *      path="/api/user/register",
      *      summary="Register new user",
-     *      tags={"User"},
+     *      tags={"Users"},
      *      @OA\RequestBody(
      *          @OA\MediaType(
      *              mediaType="application/json",
@@ -69,7 +69,7 @@ class UserController extends BaseController
      * @OA\Post(
      *      path="/api/user/login",
      *      summary="User login",
-     *      tags={"User"},
+     *      tags={"Users"},
      *      @OA\RequestBody(
      *          @OA\MediaType(
      *              mediaType="multipart/form-data",
@@ -119,7 +119,7 @@ class UserController extends BaseController
      * @OA\Get(
      *      path="/api/user/info",
      *      summary="User info",
-     *      tags={"User"},
+     *      tags={"Users"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(response="200", description="Logged user info"),
      *      @OA\Response(response="400", description="Unauthorised")
@@ -140,7 +140,7 @@ class UserController extends BaseController
      *      path="/api/user/unregister",
      *      summary="Unregister logged user",
      *      description="User will be unregistrated - all its data will be erased.",
-     *      tags={"User"},
+     *      tags={"Users"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(response="200", description="User deleted successfully"),
      *      @OA\Response(response="400", description="Unauthorised")
