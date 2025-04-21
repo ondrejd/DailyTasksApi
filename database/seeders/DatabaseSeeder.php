@@ -10,26 +10,36 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    private array $users = [
+        [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ],
+        [
+            'name' => 'Tester User',
+            'email' => 'tester@example.com',
+        ],
+    ];
+
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($this->users as $userData) {
+            $user = User::factory()->create($userData);
 
-        $tags = Tag::factory(5)->create([
-            'user_id' => $user->id,
-        ]);
-
-        $tasks = Task::factory(50)->create([
-            'user_id' => $user->id,
-        ]);
-
-        $tasks->each(fn (Task $task) => $task->tags()->sync(
-            $tags->random(random_int(1, 5))->pluck('id')->toArray()
-        ));
+            $tags = Tag::factory(5)->create([
+                'user_id' => $user->id,
+            ]);
+    
+            $tasks = Task::factory(50)->create([
+                'user_id' => $user->id,
+            ]);
+    
+            $tasks->each(fn (Task $task) => $task->tags()->sync(
+                $tags->random(random_int(1, 5))->pluck('id')->toArray()
+            ));
+        }
     }
 }

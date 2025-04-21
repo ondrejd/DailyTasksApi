@@ -227,8 +227,8 @@ class TagController extends BaseController
      *              ),
      *          ),
      *      ),
-     *      @OA\Response(response="400", description="User is unauthorized to update this tag"),
      *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
+     *      @OA\Response(response="403", ref="#/components/responses/Unauthorized"),
      *      @OA\Response(response="404", ref="#/components/responses/NotFound"),
      *      @OA\Response(
      *          response="422",
@@ -267,7 +267,7 @@ class TagController extends BaseController
         $user = $request->user();
 
         if ($tag->user_id !== $user->id) {
-            return $this->sendError(__('Unauthorized'), [], 400);
+            return $this->sendError(__('Not authorized'), [], 403);
         }
 
         // TODO Make normal request class (and validator is the same as in create method...)
@@ -336,8 +336,8 @@ class TagController extends BaseController
      *              ),
      *          ),
      *      ),
-     *      @OA\Response(response="400", description="User is unauthorized to delete this tag"),
      *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
+     *      @OA\Response(response="403", ref="#/components/responses/Unauthorized"),
      *      @OA\Response(response="404", ref="#/components/responses/NotFound"),
      * )
      */
@@ -346,7 +346,7 @@ class TagController extends BaseController
         $user = $request->user();
 
         if ($tag->user_id !== $user->id) {
-            return $this->sendError(__('Unauthorized'), [], 400);
+            return $this->sendError(__('Not authorized'), [], 403);
         }
 
         $tag->delete();

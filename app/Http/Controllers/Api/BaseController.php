@@ -24,7 +24,7 @@ use Illuminate\Http\JsonResponse;
  * )
  * @OA\Response(
  *     response="Unauthenticated",
- *     description="User unauthorized",
+ *     description="User not aunthenticated",
  *     @OA\MediaType(
  *         mediaType="application/json",
  *         @OA\Schema(
@@ -37,6 +37,25 @@ use Illuminate\Http\JsonResponse;
  *                 property="message",
  *                 type="string",
  *                 example="Not authenticated",
+ *             ),
+ *         )
+ *     )
+ * ),
+ * @OA\Response(
+ *     response="Unauthorized",
+ *     description="User unauthorized",
+ *     @OA\MediaType(
+ *         mediaType="application/json",
+ *         @OA\Schema(
+ *             @OA\Property(
+ *                 property="success",
+ *                 type="bool",
+ *                 example=false,
+ *             ),
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Not authorized",
  *             ),
  *         )
  *     )

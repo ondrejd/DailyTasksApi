@@ -124,7 +124,7 @@
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
-                                            "example": true
+                                            "example": false
                                         },
                                         "data": {
                                             "description": "Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
@@ -220,7 +220,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Tag created successfully"
+                                            "example": "Tag updated successfully"
                                         }
                                     },
                                     "type": "object"
@@ -228,11 +228,11 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "User is unauthorized to update this tag"
-                    },
                     "401": {
                         "$ref": "#/components/responses/Unauthenticated"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Unauthorized"
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
@@ -245,7 +245,7 @@
                                     "properties": {
                                         "success": {
                                             "type": "boolean",
-                                            "example": true
+                                            "example": false
                                         },
                                         "data": {
                                             "description": "Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
@@ -318,11 +318,11 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "User is unauthorized to delete this tag"
-                    },
                     "401": {
                         "$ref": "#/components/responses/Unauthenticated"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Unauthorized"
                     },
                     "404": {
                         "$ref": "#/components/responses/NotFound"
@@ -582,7 +582,7 @@
         },
         "responses": {
             "Unauthenticated": {
-                "description": "User unauthorized",
+                "description": "User not aunthenticated",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -594,6 +594,26 @@
                                 "message": {
                                     "type": "string",
                                     "example": "Not authenticated"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "User unauthorized",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Not authorized"
                                 }
                             },
                             "type": "object"
