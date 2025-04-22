@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
                 'user_id' => $user->id,
             ]);
     
-            $tasks = Task::factory(50)->create([
+            $tasks = Task::factory(25)->create([
                 'user_id' => $user->id,
             ]);
     

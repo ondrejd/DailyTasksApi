@@ -78,6 +78,36 @@ use Illuminate\Http\JsonResponse;
  *             ),
  *         )
  *     )
+ * ), 
+ * @OA\Response(
+ *     response="ValidationError",
+ *     description="Validation error",
+ *     @OA\MediaType(
+ *         mediaType="application/json",
+ *         @OA\Schema(
+ *             @OA\Property(
+ *                 property="success",
+ *                 type="bool",
+ *                 example=false,
+ *             ),
+ *             @OA\Property(
+ *                 property="data",
+ *                 description="Contains array with keys of fields names (such `name`, `email`, `color` etc. according to input data) with an array of errors which was found",
+ *                 type="object",
+ *                 @OA\Property(
+ *                     property="name",
+ *                     description="Name of field where the validation errors occured",
+ *                     type="array",
+ *                     @OA\Items(type="string", example="The name has already been taken"),
+ *                 ),
+ *             ),
+ *             @OA\Property(
+ *                 property="message",
+ *                 type="string",
+ *                 example="Validation error",
+ *             ),
+ *         ),
+ *     ),
  * ),
  */
 class BaseController extends Controller

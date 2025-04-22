@@ -21,4 +21,6 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::put('{tag}', 'update')->where('id', '[0-9]+')->name('tag.update');
         Route::delete('{tag}', 'delete')->where('id', '[0-9]+')->name('tag.delete');
     });
+
+    // TODO Tasks API
 });

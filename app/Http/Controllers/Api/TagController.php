@@ -19,7 +19,7 @@ class TagController extends BaseController
      * @OA\Get(
      *      path="/api/tag",
      *      summary="List tags",
-     *      description="Listing of all tags for the current user",
+     *      description="Listing of all tags for the current user.",
      *      tags={"Tags"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(
@@ -64,7 +64,7 @@ class TagController extends BaseController
      * @OA\Post(
      *      path="/api/tag",
      *      summary="Create new tag",
-     *      description="Create new tag for the current user",
+     *      description="Create new tag for the current user.",
      *      tags={"Tags"},
      *      security={{"bearerAuth":{}}},
      *      @OA\RequestBody(
@@ -111,36 +111,7 @@ class TagController extends BaseController
      *          ),
      *      ),
      *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
-     *      @OA\Response(
-     *          response="422",
-     *          description="Validation error",
-     *          @OA\MediaType(
-     *              mediaType="application/json",
-     *              @OA\Schema(
-     *                  @OA\Property(
-     *                      property="success",
-     *                      type="bool",
-     *                      example=false,
-     *                  ),
-     *                  @OA\Property(
-     *                      property="data",
-     *                      description="Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
-     *                      type="object",
-     *                      @OA\Property(
-     *                          property="name",
-     *                          description="Name of field where the validation errors occured",
-     *                          type="array",
-     *                          @OA\Items(type="string", example="The name has already been taken"),
-     *                      ),
-     *                  ),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      example="Validation error",
-     *                  ),
-     *              ),
-     *          ),
-     *      ),
+     *      @OA\Response(response="422", ref="#/components/responses/ValidationError"),
      * )
      */
     public function create(Request $request)
@@ -173,7 +144,7 @@ class TagController extends BaseController
      * @OA\Put(
      *      path="/api/tag/{id}",
      *      summary="Update selected tag",
-     *      description="Create selected tag of the current user",
+     *      description="Update selected tag of the current user.",
      *      tags={"Tags"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Parameter(
@@ -306,7 +277,7 @@ class TagController extends BaseController
      * @OA\Delete(
      *      path="/api/tag/{id}",
      *      summary="Delete selected tag",
-     *      description="Create selected tag of the current user",
+     *      description="Delete selected tag of the current user.",
      *      tags={"Tags"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Parameter(

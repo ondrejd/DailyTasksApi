@@ -20,6 +20,7 @@ class UserController extends BaseController
      * @OA\Post(
      *      path="/api/user/register",
      *      summary="Register new user",
+     *      description="Registration for the new users.",
      *      tags={"Users"},
      *      @OA\RequestBody(
      *          @OA\MediaType(
@@ -41,15 +42,45 @@ class UserController extends BaseController
      *                      type="string"
      *                  ),
      *                  required={"name", "email", "password"},
-     *                  example={"name": "Jane Doe", "email": "jane.doe@mail.com", "password": "abcdef"}
+     *                  example={"name": "Jane Doe", "email": "jane.doe@mail.com", "password": "password"}
      *              )
      *          )
      *      ),
-     *      @OA\Response(response="201", description="User registered successfully"),
-     *      @OA\Response(response="422", description="Validation errors")
+     *      @OA\Response(
+     *          response="200",
+     *          description="User registration was successfull",
+     *          @OA\MediaType(
+     *              mediaType="application/json",
+     *              @OA\Schema(
+     *                  @OA\Property(
+     *                      property="success",
+     *                      type="bool",
+     *                      example=true,
+     *                  ),
+     *                  @OA\Property(
+     *                      property="data",
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="token",
+     *                          type="string",
+     *                          example="4|xwf3ePQY97AJDiLLfDrwrK01hRshR12dZcBCLMms72515fcf",
+     *                      ),
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string",
+     *                          example="Jane Doe",
+     *                      ),
+     *                  ),
+     *                  @OA\Property(
+     *                      property="message",
+     *                      type="string",
+     *                      example="User registration was successfull",
+     *                  ),
+     *              )
+     *          )
+     *      ),
+     *      @OA\Response(response="422", ref="#/components/responses/ValidationError"),
      * )
-     * 
-     * @todo Just temporary will be remade when we have front-end and sent passwords will be already bcrypted
      */
     public function register(Request $request): JsonResponse
     {
@@ -65,17 +96,22 @@ class UserController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] =  $user->createToken('MyApp')->plainTextToken;
-        $success['name'] =  $user->name;
 
-        return $this->sendResponse($success, __('User register successfully.'));
+        $user = User::create($input);
+        
+        $data = [
+            'token' => $user->createToken(env('APP_NAME'))->plainTextToken,
+            'name' => $user->name,
+        ];
+
+        return $this->sendResponse($data, __('User registration was successfull'));
     }
 
     /**
      * @OA\Post(
      *      path="/api/user/login",
      *      summary="User login",
+     *      description="Attempt to login user and retrieve its access token.",
      *      tags={"Users"},
      *      @OA\RequestBody(
      *          @OA\MediaType(
@@ -142,11 +178,14 @@ class UserController extends BaseController
 
         if ($attempt) {
             $user = Auth::user();
-            // TODO Negenerovat pořád nový, ale použít starší, který neexpiroval
-            $success['token'] =  $user->createToken(env('APP_NAME'))->plainTextToken;
-            $success['name'] =  $user->name;
 
-            return $this->sendResponse($success, __('User successfully logged in'));
+            // TODO Negenerovat pořád nový, ale použít starší, který neexpiroval
+            $data = [
+                'token' => $user->createToken(env('APP_NAME'))->plainTextToken,
+                'name' => $user->name,
+            ];
+
+            return $this->sendResponse($data, __('User successfully logged in'));
         } else {
             return $this->sendError(__('Not authenticated'), [], 401);
         }
@@ -156,6 +195,7 @@ class UserController extends BaseController
      * @OA\Get(
      *      path="/api/user/info",
      *      summary="User info",
+     *      description="Give informations about currently logged user.",
      *      tags={"Users"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(
@@ -193,7 +233,7 @@ class UserController extends BaseController
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            // TODO Množství úkolů a tagů
+            // TODO Count of tasks and tags
         ]);
     }
 
@@ -213,8 +253,10 @@ class UserController extends BaseController
         $user = $request->user();
 
         $user->tokens()->delete();
+        $user->tags()->delete();
+        $user->tasks()->delete();
         $user->delete();
 
-        return $this->sendResponse([], __('User deleted successfully'));
+        return $this->sendResponse([], __('User unregistered successfully'));
     }
 }

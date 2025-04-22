@@ -17,7 +17,7 @@
                     "Tags"
                 ],
                 "summary": "List tags",
-                "description": "Listing of all tags for the current user",
+                "description": "Listing of all tags for the current user.",
                 "operationId": "05429641ff2d4731ad9bc60b1c0e138c",
                 "responses": {
                     "200": {
@@ -61,7 +61,7 @@
                     "Tags"
                 ],
                 "summary": "Create new tag",
-                "description": "Create new tag for the current user",
+                "description": "Create new tag for the current user.",
                 "operationId": "d0eb902a938b5cd865c3a6efce14c0b1",
                 "requestBody": {
                     "description": "Tag object that needs to be added to the store",
@@ -117,38 +117,7 @@
                         "$ref": "#/components/responses/Unauthenticated"
                     },
                     "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "data": {
-                                            "description": "Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
-                                            "properties": {
-                                                "name": {
-                                                    "description": "Name of field where the validation errors occured",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The name has already been taken"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Validation error"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/ValidationError"
                     }
                 },
                 "security": [
@@ -164,7 +133,7 @@
                     "Tags"
                 ],
                 "summary": "Update selected tag",
-                "description": "Create selected tag of the current user",
+                "description": "Update selected tag of the current user.",
                 "operationId": "136a6d25ad8f7d4e9409b189bf3056e3",
                 "parameters": [
                     {
@@ -283,7 +252,7 @@
                     "Tags"
                 ],
                 "summary": "Delete selected tag",
-                "description": "Create selected tag of the current user",
+                "description": "Delete selected tag of the current user.",
                 "operationId": "afecbd0d82f4fba14e7fb92f441e8ea6",
                 "parameters": [
                     {
@@ -341,6 +310,7 @@
                     "Users"
                 ],
                 "summary": "Register new user",
+                "description": "Registration for the new users.",
                 "operationId": "df1ca50c32c4c932c79956c52c87eaab",
                 "requestBody": {
                     "content": {
@@ -369,18 +339,48 @@
                                 "example": {
                                     "name": "Jane Doe",
                                     "email": "jane.doe@mail.com",
-                                    "password": "abcdef"
+                                    "password": "password"
                                 }
                             }
                         }
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "User registered successfully"
+                    "200": {
+                        "description": "User registration was successfull",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "4|xwf3ePQY97AJDiLLfDrwrK01hRshR12dZcBCLMms72515fcf"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Jane Doe"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registration was successfull"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation errors"
+                        "$ref": "#/components/responses/ValidationError"
                     }
                 }
             }
@@ -391,6 +391,7 @@
                     "Users"
                 ],
                 "summary": "User login",
+                "description": "Attempt to login user and retrieve its access token.",
                 "operationId": "e2f16b490348a902bb9994972e2d20af",
                 "requestBody": {
                     "content": {
@@ -463,6 +464,7 @@
                     "Users"
                 ],
                 "summary": "User info",
+                "description": "Give informations about currently logged user.",
                 "operationId": "cdf71a463c6c18c5370d453b2fbd0437",
                 "responses": {
                     "200": {
@@ -634,6 +636,40 @@
                                 "message": {
                                     "type": "string",
                                     "example": "Not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "ValidationError": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "success": {
+                                    "type": "boolean",
+                                    "example": false
+                                },
+                                "data": {
+                                    "description": "Contains array with keys of fields names (such `name`, `email`, `color` etc. according to input data) with an array of errors which was found",
+                                    "properties": {
+                                        "name": {
+                                            "description": "Name of field where the validation errors occured",
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "The name has already been taken"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                },
+                                "message": {
+                                    "type": "string",
+                                    "example": "Validation error"
                                 }
                             },
                             "type": "object"
