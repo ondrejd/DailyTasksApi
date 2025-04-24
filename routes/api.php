@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\TagController;
+use App\Http\Controllers\Api\TaskController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 
@@ -23,4 +24,8 @@ Route::middleware('auth:sanctum')->group(function() {
     });
 
     // TODO Tasks API
+    Route::controller(TaskController::class)->prefix('task')->group(function () {
+        Route::get('', 'list')->name('task.list');
+        //
+    });
 });

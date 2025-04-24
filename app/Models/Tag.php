@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * Tag model.
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $name
  * @property ?string $color
  * @property integer $user_id
+ * @property Carbon|\DateTime|string $created_at
+ * @property Carbon|\DateTime|string|null $updated_at
  * @property User $user
  * @property-read Collection<Task> $tasks
  * 
@@ -23,13 +26,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *     description="Single task's tag",
  *     required={"name"},
  *     @OA\Property(
+ *         type="integer",
  *         format="int64",
  *         property="id",
  *         description="Unique identifier",
  *         example=1,
  *     ),
  *     @OA\Property(
- *         format="string",
+ *         type="string",
  *         property="name",
  *         description="Name of the tag",
  *         example="Personal",

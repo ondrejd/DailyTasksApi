@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 /**
  * @OA\Tag(
  *     name="Tags",
- *     description="Tasks tags API",
+ *     description="Tags API",
  * )
  */
 class TagController extends BaseController
@@ -19,7 +19,7 @@ class TagController extends BaseController
      * @OA\Get(
      *      path="/api/tag",
      *      summary="List tags",
-     *      description="Listing of all tags for the current user.",
+     *      description="Listing of all tags of the current user.",
      *      tags={"Tags"},
      *      security={{"bearerAuth":{}}},
      *      @OA\Response(
@@ -75,13 +75,13 @@ class TagController extends BaseController
      *              mediaType="application/json",
      *              @OA\Schema(
      *                  @OA\Property(
-     *                      format="string",
+     *                      type="string",
      *                      property="name",
      *                      description="Name of the tag",
      *                      example="Personal",
      *                  ),
      *                  @OA\Property(
-     *                      format="string",
+     *                      type="string",
      *                      property="color",
      *                      description="Color of the tag in hex format",
      *                      example="#0066aa",
@@ -163,13 +163,13 @@ class TagController extends BaseController
      *              mediaType="application/json",
      *              @OA\Schema(
      *                  @OA\Property(
-     *                      format="string",
+     *                      type="string",
      *                      property="name",
      *                      description="Name of the tag",
      *                      example="Other",
      *                  ),
      *                  @OA\Property(
-     *                      format="string",
+     *                      type="string",
      *                      property="color",
      *                      description="Color of the tag in hex format",
      *                      example="#a66666",
