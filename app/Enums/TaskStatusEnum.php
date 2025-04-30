@@ -2,9 +2,6 @@
 
 namespace App\Enums;
 
-/**
- * @OA\Schema()
- */
 enum TaskStatusEnum: string
 {
     case ONGOING = 'ongoing';

@@ -57,6 +57,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  *         property="status",
  *         description="Current status of the task (`ongoing`, `finished`, `postponed`, `canceled`)",
  *         example="ongoing",
+ *         enum={"ongoing", "finished", "postponed", "cancelled"},
  *     ),
  *     @OA\Property(
  *         type="array",

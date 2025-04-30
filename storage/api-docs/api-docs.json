@@ -26,19 +26,11 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
                                         "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/Tag"
                                             }
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": ""
                                         }
                                     },
                                     "type": "object"
@@ -90,22 +82,14 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Tag created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
                                         "data": {
                                             "$ref": "#/components/schemas/Tag"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Tag created successfully"
                                         }
                                     },
                                     "type": "object"
@@ -180,16 +164,8 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
                                         "data": {
                                             "$ref": "#/components/schemas/Tag"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Tag updated successfully"
                                         }
                                     },
                                     "type": "object"
@@ -207,38 +183,7 @@
                         "$ref": "#/components/responses/NotFound"
                     },
                     "422": {
-                        "description": "Validation error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "data": {
-                                            "description": "Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
-                                            "properties": {
-                                                "name": {
-                                                    "description": "Name of field where the validation errors occured",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The name has already been taken"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Validation error"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/ValidationError"
                     }
                 },
                 "security": [
@@ -385,7 +330,27 @@
                                         "example": "2026-01-02 13:46:00"
                                     },
                                     "status": {
-                                        "$ref": "#/components/schemas/TaskStatusEnum"
+                                        "description": "Status of the task (default value `ongoing`).",
+                                        "type": "string",
+                                        "enum": [
+                                            "ongoing",
+                                            "finished",
+                                            "postponed",
+                                            "cancelled"
+                                        ],
+                                        "example": "ongoing"
+                                    },
+                                    "tags": {
+                                        "description": "Array of tag identifiers.",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "format": "int64"
+                                        },
+                                        "example": [
+                                            2,
+                                            3
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -657,15 +622,6 @@
     },
     "components": {
         "schemas": {
-            "TaskStatusEnum": {
-                "type": "string",
-                "enum": [
-                    "ONGOING",
-                    "FINISHED",
-                    "POSTPONED",
-                    "CANCELED"
-                ]
-            },
             "Tag": {
                 "title": "Tag",
                 "description": "Single task's tag",
@@ -725,6 +681,12 @@
                     "status": {
                         "description": "Current status of the task (`ongoing`, `finished`, `postponed`, `canceled`)",
                         "type": "string",
+                        "enum": [
+                            "ongoing",
+                            "finished",
+                            "postponed",
+                            "cancelled"
+                        ],
                         "example": "ongoing"
                     },
                     "tags": {

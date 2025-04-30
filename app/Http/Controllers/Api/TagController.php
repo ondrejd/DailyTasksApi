@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\TagCreateRequest;
+use App\Http\Requests\TagDeleteRequest;
+use App\Http\Requests\TagListRequest;
+use App\Http\Requests\TagUpdateRequest;
+use App\Http\Resources\TagResource;
+use App\Http\Resources\TagResourceCollection;
 use App\Models\Tag;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 /**
  * @OA\Tag(
@@ -29,19 +32,9 @@ class TagController extends BaseController
      *              mediaType="application/json",
      *              @OA\Schema(
      *                  @OA\Property(
-     *                      property="success",
-     *                      type="bool",
-     *                      example=true,
-     *                  ),
-     *                  @OA\Property(
      *                      property="data",
      *                      type="array",
-     *                      @OA\Items(ref="#/components/schemas/Tag")
-     *                  ),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      example="",
+     *                      @OA\Items(ref="#/components/schemas/Tag"),
      *                  ),
      *              ),
      *          ),
@@ -49,15 +42,9 @@ class TagController extends BaseController
      *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
      * )
      */
-    public function list(Request $request)
+    public function list(TagListRequest $request): TagResourceCollection
     {
-        return $this->sendResponse(
-            $request->user()->tags->map(fn (Tag $tag) => [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'color' => $tag->color,
-            ])->toArray()
-        );
+        return new TagResourceCollection(request()->user()->tags);
     }
 
     /**
@@ -91,53 +78,28 @@ class TagController extends BaseController
      *          ),
      *      ),
      *      @OA\Response(
-     *          response="200",
+     *          response="201",
      *          description="Tag created successfully",
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(
-     *                      property="success",
-     *                      type="bool",
-     *                      example=true,
-     *                  ),
      *                  @OA\Property(property="data", ref="#/components/schemas/Tag"),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      example="Tag created successfully",
-     *                  ),
      *              ),
      *          ),
      *      ),
      *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
      *      @OA\Response(response="422", ref="#/components/responses/ValidationError"),
      * )
+     * 
+     * @todo Move the description of request body to the TagCreateRequest class...
      */
-    public function create(Request $request)
+    public function create(TagCreateRequest $request): TagResource
     {
-        // TODO Make normal request class (and validator is the same as in update method...)
-        $validator = Validator::make($request->all(), [
-            'name' => [
-                'required',
-                'string',
-                Rule::unique('tags', 'name')->where('user_id', $request->user()->id),
-            ],
-            'color' => 'string|max:7',
-        ]);
+        $tag = new Tag($request->validated());
 
-        $tag = new Tag($validator->validated());
-        $request->user()->tags()->save($tag);
+        request()->user()->tags()->save($tag);
 
-        // TODO Make normal response class with OpenApi annotations...
-        return $this->sendResponse(
-            [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'color' => $tag->color,
-            ],
-            __('Tag created successfully')
-        );
+        return new TagResource($tag);
     }
 
     /**
@@ -184,73 +146,21 @@ class TagController extends BaseController
      *          @OA\MediaType(
      *              mediaType="application/json",
      *              @OA\Schema(
-     *                  @OA\Property(
-     *                      property="success",
-     *                      type="bool",
-     *                      example=true,
-     *                  ),
      *                  @OA\Property(property="data", ref="#/components/schemas/Tag"),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      example="Tag updated successfully",
-     *                  ),
      *              ),
      *          ),
      *      ),
      *      @OA\Response(response="401", ref="#/components/responses/Unauthenticated"),
      *      @OA\Response(response="403", ref="#/components/responses/Unauthorized"),
      *      @OA\Response(response="404", ref="#/components/responses/NotFound"),
-     *      @OA\Response(
-     *          response="422",
-     *          description="Validation error",
-     *          @OA\MediaType(
-     *              mediaType="application/json",
-     *              @OA\Schema(
-     *                  @OA\Property(
-     *                      property="success",
-     *                      type="bool",
-     *                      example=false,
-     *                  ),
-     *                  @OA\Property(
-     *                      property="data",
-     *                      description="Contains array with keys of fields name (`name`, `color`) with an array of errors which was found",
-     *                      type="object",
-     *                      @OA\Property(
-     *                          property="name",
-     *                          description="Name of field where the validation errors occured",
-     *                          type="array",
-     *                          @OA\Items(type="string", example="The name has already been taken"),
-     *                      ),
-     *                  ),
-     *                  @OA\Property(
-     *                      property="message",
-     *                      type="string",
-     *                      example="Validation error",
-     *                  ),
-     *              ),
-     *          ),
-     *      ),
+     *      @OA\Response(response="422", ref="#/components/responses/ValidationError"),
      * )
+     * 
+     * @todo Move the description of request body to the TagUpdateRequest class...
      */
-    public function update(Request $request, Tag $tag)
+    public function update(TagUpdateRequest $request, Tag $tag): TagResource
     {
-        $user = $request->user();
-
-        if ($tag->user_id !== $user->id) {
-            return $this->sendError(__('Not authorized'), [], 403);
-        }
-
-        // TODO Make normal request class (and validator is the same as in create method...)
-        $validator = Validator::make($request->all(), [
-            'name' => [
-                'string',
-                Rule::unique('tags', 'name')->where('user_id', $request->user()->id),
-            ],
-            'color' => 'string|max:7',
-        ]);
-
-        $values = $validator->validated();
+        $values = $request->validated();
 
         if ($values['name']) {
             $tag->name = $values['name'];
@@ -262,15 +172,7 @@ class TagController extends BaseController
 
         $tag->save();
 
-        // TODO Make normal response class with OpenApi annotations...
-        return $this->sendResponse(
-            [
-                'id' => $tag->id,
-                'name' => $tag->name,
-                'color' => $tag->color,
-            ],
-            __('Tag updated successfully')
-        );
+        return new TagResource($tag);
     }
 
     /**
@@ -312,14 +214,8 @@ class TagController extends BaseController
      *      @OA\Response(response="404", ref="#/components/responses/NotFound"),
      * )
      */
-    public function delete(Request $request, Tag $tag)
+    public function delete(TagDeleteRequest $request, Tag $tag)
     {
-        $user = $request->user();
-
-        if ($tag->user_id !== $user->id) {
-            return $this->sendError(__('Not authorized'), [], 403);
-        }
-
         $tag->delete();
 
         return $this->sendResponse(null, __('Tag deleted successfully'));
